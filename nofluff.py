@@ -1,5 +1,7 @@
 from requests_html import HTMLSession
 import datetime
+import re
+import json
 
 
 class scraper_nofluff:
@@ -7,7 +9,7 @@ class scraper_nofluff:
         session = HTMLSession()
         headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Safari/605.1.15'}
         r = session.get(url, headers=headers)
-        r.html.render(retries=3, wait=0.2, sleep=1, scrolldown=1, timeout=60)
+        r.html.render(retries=3, wait=1, sleep=1, scrolldown=1, timeout=60)
         return r.html
 
 
@@ -41,9 +43,13 @@ class scraper_nofluff:
         return offers_list
 
 
-    def parse_noflufjob_offers_list(self, offers_list):
+    def parse_noflufjob_offers_list(self, offers_list, city, category):
+        timestamp = self.current_date()
+        data = {'timestamp': timestamp, 'city': city, 'category': category, 'offers_count': len(offers_list)}
+        json_data = json.dumps(data)
+        print(json_data)
         for url_offer in offers_list:
-            self.parse_nofluffjob_offer(url_offer)
+            self.parse_nofluffjob_offer(url_offer, city, category)
 
         '''sd
         parsowanie listy
@@ -54,19 +60,26 @@ class scraper_nofluff:
         '''
 
 
-    def parse_nofluffjob_offer(self, url):
+    def parse_nofluffjob_offer(self, url, city, category):
         print(url)
         data = self.url_get_data(url)
         offer = data.find('#sticky-container', first=True)
         timestamp = self.current_date()
         vacancy_name = self.parse_get_field(offer, '.article-header-container', 'h1')
         company_name = self.parse_get_field(offer, '.dl-horizontal', 'dd')
-        salary_uop, salary_b2b = self.parse_get_salary(offer)
+        salary_uop_min, salary_uop_max, salary_b2b_min, salary_b2b_max = self.parse_get_salary(offer)
         print(timestamp)
         print('Vacancy name: %s' % vacancy_name)
         print('Company name: %s' % company_name)
-        print('Salary UoP: %s' % salary_uop)
-        print('Salary B2B: %s' % salary_b2b)
+        print('Salary UoP - min: %s PLN, max: %s PLN' % (salary_uop_min, salary_uop_max))
+        print('Salary B2B - min: %s PLN, max: %s PLN' % (salary_b2b_min, salary_b2b_max))
+        data = {}
+        data = {'timestamp': timestamp, 'vacancy_name': vacancy_name, 'company_name': company_name,
+                        'city':city, 'category': category,
+                        'salary_uop':{'min': salary_uop_min, 'max': salary_uop_max}, 'salary_b2b':{'min': salary_b2b_min,
+                        'max': salary_b2b_max}}
+        json_data = json.dumps(data)
+        print(json_data)
         '''
         parsowanie oferty
         data parsowania | lokalizacja | nazwa firmy | rozmiar_firmy |  seniority | wynagrodzenie min b2b | wyn max b2b | wyn UoP min | wyn UoP max |
@@ -91,8 +104,13 @@ class scraper_nofluff:
         for remove_string in remove_list:
             if remove_string in salary_text:
                 salary_text = salary_text.replace(remove_string,'')
+        #print(salary_text)
         salary_uop = None
+        salary_uop_min = None
+        salary_uop_max = None
         salary_b2b = None
+        salary_b2b_min = None
+        salary_b2b_max = None
         uop_string = '(UoP) per'
         b2b_string = '(B2B) per'
         uop_exist = False
@@ -120,6 +138,7 @@ class scraper_nofluff:
                             salary_uop = salary_uop[1:]
                         else:
                             pass
+            salary_uop_min, salary_uop_max = self.salary_uop_lowhigh(salary_uop)
 
         if b2b_exist:
             if find_uop == None:
@@ -135,14 +154,55 @@ class scraper_nofluff:
                             salary_b2b = salary_b2b[1:]
                         else:
                             pass
-        return salary_uop, salary_b2b
+            salary_b2b_min, salary_b2b_max = self.salary_b2b_lowhigh(salary_b2b)
+        return salary_uop_min, salary_uop_max, salary_b2b_min, salary_b2b_max
+
+
+    def salary_uop_lowhigh(self, salary_uop):
+        isrange = salary_uop.find('-')
+        if isrange == -1:
+            salary_uop_low = self.salary_output_full(salary_uop)
+            return salary_uop_low, salary_uop_low
+        else:
+            salary_split = salary_uop.split('-')
+            salary_uop_low = self.salary_output_full(salary_split[0])
+            salary_uop_high = self.salary_output_full(salary_split[1])
+            return salary_uop_low, salary_uop_high
+
+
+    def salary_b2b_lowhigh(self, salary_b2b):
+        isrange = salary_b2b.find('-')
+        if isrange == -1:
+            salary_b2b_low = self.salary_output_full(salary_b2b)
+            return salary_b2b_low, salary_b2b_low
+        else:
+            ismonthly = salary_b2b.find('K')
+            # keep it mind it can be also hourly but didn't saw yet ///
+            if ismonthly == -1:
+                salary_split = salary_b2b.split('-')
+                lowday = re.sub('[^0-9]', '', salary_split[0])
+                highday = re.sub('[^0-9]', '', salary_split[1])
+                salary_b2b_low = int(float(lowday) * 21)
+                salary_b2b_high = int(float(highday) * 21)
+                return salary_b2b_low, salary_b2b_high
+            else:
+                salary_split = salary_b2b.split('-')
+                salary_b2b_low = self.salary_output_full(salary_split[0])
+                salary_b2b_high = self.salary_output_full(salary_split[1])
+                return salary_b2b_low, salary_b2b_high
+
+
+    def salary_output_full(self, salary):
+        salary_digit = re.sub('[^0-9.]', '', salary)
+        salary = int(float(salary_digit) * 1000)
+        return salary
 
 
 def main():
     scraper = scraper_nofluff()
-    offers_list = scraper.url_get_offers('Poznań', 'DevOps')
-    #offers_list = ['https://nofluffjobs.com/job/backend-developer-nova-tracking-lnpyozha?criteria=category%253Dbackend%20city%253Dpozna%25C5%2584%20pozna%25C5%2584','https://nofluffjobs.com/job/software-engineer-magnetar-rafal-suszka-xg1zpwls?criteria=category%253Dbackend%20city%253Dpozna%25C5%2584%20pozna%25C5%2584','https://nofluffjobs.com/job/senior-net-developer-next-it-poland-6e75navj?criteria=category%253Dbackend%20city%253Dpozna%25C5%2584%20pozna%25C5%2584','https://nofluffjobs.com/job/site-reliability-engineer-holidaycheck-l3gk0uef?criteria=category%253Ddevops%20city%253Dpozna%25C5%2584%20pozna%25C5%2584']
-    scraper.parse_noflufjob_offers_list(offers_list)
+    #offers_list = scraper.url_get_offers('Poznań', 'Backend')
+    offers_list = ['https://nofluffjobs.com/job/junior-ror-developer-netguru-70bca42w?criteria=category%253Dbackend%20city%253Dpozna%25C5%2584%20pozna%25C5%2584','https://nofluffjobs.com/job/senior-net-developer-next-it-poland-6e75navj?criteria=category%253Dbackend%20city%253Dpozna%25C5%2584%20pozna%25C5%2584','https://nofluffjobs.com/job/senior-java-developer-espeo-software-s5mitexi?criteria=category%253Dbackend%20city%253Dpozna%25C5%2584%20pozna%25C5%2584']
+    scraper.parse_noflufjob_offers_list(offers_list, 'Poznań', 'Backend')
 
 
 
