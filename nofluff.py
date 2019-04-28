@@ -2,19 +2,27 @@ from requests_html import HTMLSession
 import datetime
 import re
 import json
+import logging
 
+#make logging 
+logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 
 class scraper_nofluff:
     def url_get_data(self ,url):
+        logging.info('Getting data from url: %s' % url)
         session = HTMLSession()
         headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Safari/605.1.15'}
         r = session.get(url, headers=headers)
+        """
+        have to create config file coz rpi need custom values
+        """
         r.html.render(retries=3, wait=1, sleep=1, scrolldown=1, timeout=60)
         return r.html
 
 
     def url_get_categories_by_city(self, city):
         url_create = 'https://nofluffjobs.com/jobs/%s?criteria=city=%s' % (city, city)
+        logging.info('Getting categories for city: %s - url: %s' % (city,url_create))
         data = self.url_get_data(url_create)
         ads = data.find('#sticky-container', first=True)
         categories = []
@@ -22,11 +30,15 @@ class scraper_nofluff:
         for category_url in ads.absolute_links:
             if verify_string in category_url:
                 categories.append(category_url)
+        print(categories)
         return categories
 
 
     def url_get_offers(self, city, category):
-        category_list = ['https://nofluffjobs.com/jobs/poznań/hr?criteria=city%253Dpozna%25C5%2584%20pozna%25C5%2584', 'https://nofluffjobs.com/jobs/poznań/frontend?criteria=city%253Dpozna%25C5%2584%20pozna%25C5%2584', 'https://nofluffjobs.com/jobs/poznań/devops?criteria=city%253Dpozna%25C5%2584%20pozna%25C5%2584', 'https://nofluffjobs.com/jobs/poznań/fullstack?criteria=city%253Dpozna%25C5%2584%20pozna%25C5%2584', 'https://nofluffjobs.com/jobs/poznań/backend?criteria=city%253Dpozna%25C5%2584%20pozna%25C5%2584', 'https://nofluffjobs.com/jobs/poznań/mobile?criteria=city%253Dpozna%25C5%2584%20pozna%25C5%2584', 'https://nofluffjobs.com/jobs/poznań/project-manager?criteria=city%253Dpozna%25C5%2584%20pozna%25C5%2584', 'https://nofluffjobs.com/jobs/poznań/support?criteria=city%253Dpozna%25C5%2584%20pozna%25C5%2584', 'https://nofluffjobs.com/jobs/poznań/testing?criteria=city%253Dpozna%25C5%2584%20pozna%25C5%2584', 'https://nofluffjobs.com/jobs/poznań/other?criteria=city%253Dpozna%25C5%2584%20pozna%25C5%2584'] #self.url_get_categories_by_city(city)
+        """
+        Get offers and return offers list
+        """
+        category_list = self.url_get_categories_by_city(city)
         for url in category_list:
             if category.lower() in url:
                 return self.url_get_offers_list(url)
@@ -40,6 +52,7 @@ class scraper_nofluff:
         for url_offer in offers.absolute_links:
             if verify_string in url_offer:
                 offers_list.append(url_offer)
+        print(offers_list)
         return offers_list
 
 
@@ -200,9 +213,9 @@ class scraper_nofluff:
 
 def main():
     scraper = scraper_nofluff()
-    #offers_list = scraper.url_get_offers('Poznań', 'Backend')
-    offers_list = ['https://nofluffjobs.com/job/junior-ror-developer-netguru-70bca42w?criteria=category%253Dbackend%20city%253Dpozna%25C5%2584%20pozna%25C5%2584','https://nofluffjobs.com/job/senior-net-developer-next-it-poland-6e75navj?criteria=category%253Dbackend%20city%253Dpozna%25C5%2584%20pozna%25C5%2584','https://nofluffjobs.com/job/senior-java-developer-espeo-software-s5mitexi?criteria=category%253Dbackend%20city%253Dpozna%25C5%2584%20pozna%25C5%2584']
-    scraper.parse_noflufjob_offers_list(offers_list, 'Poznań', 'Backend')
+    offers_list = scraper.url_get_offers('Poznan', 'Devops')
+    #offers_list = ['https://nofluffjobs.com/job/junior-ror-developer-netguru-70bca42w?criteria=category%253Dbackend%20city%253Dpozna%25C5%2584%20pozna%25C5%2584','https://nofluffjobs.com/job/senior-net-developer-next-it-poland-6e75navj?criteria=category%253Dbackend%20city%253Dpozna%25C5%2584%20pozna%25C5%2584','https://nofluffjobs.com/job/senior-java-developer-espeo-software-s5mitexi?criteria=category%253Dbackend%20city%253Dpozna%25C5%2584%20pozna%25C5%2584']
+    scraper.parse_noflufjob_offers_list(offers_list, 'Poznań', 'Devops')
 
 
 

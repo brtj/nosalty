@@ -1,0 +1,18 @@
+Setup for RPi
+
+requirments
+python 3.6.5
+
+pip
+requests_html with websocets==6.0
+urllib3==1.23
+
+pyppeteer fix
+venv/lib/python3.6/site-packages/pyppeteer/
+change __init__.py
+__pyppeteer_home__ = 'path/to/chromium' e.g. '/usr/lib/'
+
+change chromium_downloader.py
+DOWNLOADS_FOLDER = Path(__pyppeteer_home__) / 'chromium-browser' #chromium folder
+
+chromiumExecutable in 'linux' key to DOWNLOADS_FOLDER / 'chromium-browser' #chromium executable

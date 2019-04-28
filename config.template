@@ -1,0 +1,6 @@
+[nofluffscraper]
+retries = 3
+wait = 1
+sleep = 1
+scrolldown = 1
+timeout = 60
