@@ -1,22 +1,52 @@
+#!/usr/bin/env python3
 from requests_html import HTMLSession
 import datetime
 import re
 import json
 import logging
+import argparse
+import configparser
+from collections import namedtuple
 
-#make logging 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 
+
+def parserinfo():
+    parser = argparse.ArgumentParser()
+    parser._action_groups.pop()
+    required = parser.add_argument_group('required arguments')
+    optional = parser.add_argument_group('optional arguments')
+    required.add_argument('--city', help='City name', required=True)
+    required.add_argument('--category', help='Category', required=True)
+    optional.add_argument('--optional_arg')
+    args = parser.parse_args()
+    return args
+
+
 class scraper_nofluff:
+    def configinfo(self):
+        config = configparser.ConfigParser()
+        config.read('config')
+        if 'nofluffscraper' in config:
+            noconf = namedtuple('config', ['retries', 'wait', 'sleep', 'scrolldown', 'timeout'])
+            nofluffconf = noconf(config['nofluffscraper']['retries'],
+                                 config['nofluffscraper']['wait'],
+                                 config['nofluffscraper']['sleep'],
+                                 config['nofluffscraper']['scrolldown'],
+                                 config['nofluffscraper']['timeout'])
+            return nofluffconf
+        else:
+            raise ValueError('No config file created. Should be in script dir. Use config.template')
+
+
     def url_get_data(self ,url):
-        logging.info('Getting data from url: %s' % url)
+        config = self.configinfo()
+        logging.info('Getting data for url: %s' % url)
         session = HTMLSession()
         headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Safari/605.1.15'}
         r = session.get(url, headers=headers)
-        """
-        have to create config file coz rpi need custom values
-        """
-        r.html.render(retries=3, wait=1, sleep=1, scrolldown=1, timeout=60)
+        r.html.render(retries=int(config.retries), wait=int(config.wait), sleep=int(config.sleep),
+                      scrolldown=int(config.scrolldown), timeout=int(config.timeout))
         return r.html
 
 
@@ -30,7 +60,6 @@ class scraper_nofluff:
         for category_url in ads.absolute_links:
             if verify_string in category_url:
                 categories.append(category_url)
-        print(categories)
         return categories
 
 
@@ -38,6 +67,7 @@ class scraper_nofluff:
         """
         Get offers and return offers list
         """
+        logging.info('Getting offers list for category %s in city %s.' % (category, city))
         category_list = self.url_get_categories_by_city(city)
         for url in category_list:
             if category.lower() in url:
@@ -52,15 +82,14 @@ class scraper_nofluff:
         for url_offer in offers.absolute_links:
             if verify_string in url_offer:
                 offers_list.append(url_offer)
-        print(offers_list)
         return offers_list
 
 
     def parse_noflufjob_offers_list(self, offers_list, city, category):
+        logging.info('Parsing offers list from %s in category: %s' % (city, category))
         timestamp = self.current_date()
         data = {'timestamp': timestamp, 'city': city, 'category': category, 'offers_count': len(offers_list)}
         json_data = json.dumps(data)
-        print(json_data)
         for url_offer in offers_list:
             self.parse_nofluffjob_offer(url_offer, city, category)
 
@@ -74,14 +103,13 @@ class scraper_nofluff:
 
 
     def parse_nofluffjob_offer(self, url, city, category):
-        print(url)
+        logging.info('Parsing offer - url: %s, city: %s, category: %s' % (url, city, category))
         data = self.url_get_data(url)
         offer = data.find('#sticky-container', first=True)
         timestamp = self.current_date()
         vacancy_name = self.parse_get_field(offer, '.article-header-container', 'h1')
         company_name = self.parse_get_field(offer, '.dl-horizontal', 'dd')
         salary_uop_min, salary_uop_max, salary_b2b_min, salary_b2b_max = self.parse_get_salary(offer)
-        print(timestamp)
         print('Vacancy name: %s' % vacancy_name)
         print('Company name: %s' % company_name)
         print('Salary UoP - min: %s PLN, max: %s PLN' % (salary_uop_min, salary_uop_max))
@@ -213,9 +241,11 @@ class scraper_nofluff:
 
 def main():
     scraper = scraper_nofluff()
-    offers_list = scraper.url_get_offers('Poznan', 'Devops')
+    args = parserinfo()
+    scraper.configinfo()
+    offers_list = scraper.url_get_offers(args.city, args.category)
     #offers_list = ['https://nofluffjobs.com/job/junior-ror-developer-netguru-70bca42w?criteria=category%253Dbackend%20city%253Dpozna%25C5%2584%20pozna%25C5%2584','https://nofluffjobs.com/job/senior-net-developer-next-it-poland-6e75navj?criteria=category%253Dbackend%20city%253Dpozna%25C5%2584%20pozna%25C5%2584','https://nofluffjobs.com/job/senior-java-developer-espeo-software-s5mitexi?criteria=category%253Dbackend%20city%253Dpozna%25C5%2584%20pozna%25C5%2584']
-    scraper.parse_noflufjob_offers_list(offers_list, 'Poznań', 'Devops')
+    scraper.parse_noflufjob_offers_list(offers_list, args.city, args.category)
 
 
 
