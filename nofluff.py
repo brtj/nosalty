@@ -114,19 +114,12 @@ class scraper_nofluff:
         print('Company name: %s' % company_name)
         print('Salary UoP - min: %s PLN, max: %s PLN' % (salary_uop_min, salary_uop_max))
         print('Salary B2B - min: %s PLN, max: %s PLN' % (salary_b2b_min, salary_b2b_max))
-        data = {}
         data = {'timestamp': timestamp, 'vacancy_name': vacancy_name, 'company_name': company_name,
                         'city':city, 'category': category,
-                        'salary_uop':{'min': salary_uop_min, 'max': salary_uop_max}, 'salary_b2b':{'min': salary_b2b_min,
-                        'max': salary_b2b_max}}
+                        'salary_uop_min':salary_uop_min, 'salary_uop_max': salary_uop_max, 'salary_b2b_min': salary_b2b_min,
+                        'salary_b2b_max': salary_b2b_max}
         json_data = json.dumps(data)
         print(json_data)
-        '''
-        parsowanie oferty
-        data parsowania | lokalizacja | nazwa firmy | rozmiar_firmy |  seniority | wynagrodzenie min b2b | wyn max b2b | wyn UoP min | wyn UoP max |
-        wymagania lista |
-        return json
-        '''
 
     def current_date(self):
         return datetime.datetime.now().strftime('%Y%m%d%H%M%S.%f')
@@ -246,6 +239,7 @@ class scraper_nofluff:
 def main():
     scraper = scraper_nofluff()
     args = parserinfo()
+    print(args)
     scraper.configinfo()
     offers_list = scraper.url_get_offers(args.city, args.category)
     #offers_list = ['https://nofluffjobs.com/job/junior-ror-developer-netguru-70bca42w?criteria=category%253Dbackend%20city%253Dpozna%25C5%2584%20pozna%25C5%2584','https://nofluffjobs.com/job/senior-net-developer-next-it-poland-6e75navj?criteria=category%253Dbackend%20city%253Dpozna%25C5%2584%20pozna%25C5%2584','https://nofluffjobs.com/job/senior-java-developer-espeo-software-s5mitexi?criteria=category%253Dbackend%20city%253Dpozna%25C5%2584%20pozna%25C5%2584']
