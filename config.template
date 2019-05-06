@@ -4,3 +4,7 @@ wait = 1
 sleep = 1
 scrolldown = 1
 timeout = 60
+[django-server]
+url = http://localhost
+api_login = login
+api_pass = password
