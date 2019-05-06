@@ -239,6 +239,10 @@ class scraper_nofluff:
         return salary
 
 
+    def send_to_API(self,query, json):
+        print('send to API - django server')
+
+
 def main():
     scraper = scraper_nofluff()
     args = parserinfo()
