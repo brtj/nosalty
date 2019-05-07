@@ -8,7 +8,8 @@ import argparse
 import configparser
 import requests
 from collections import namedtuple
-import logging.config
+import logging
+import yaml
 
 
 with open('logging.yaml', 'rt') as f:
