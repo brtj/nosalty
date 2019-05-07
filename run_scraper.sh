@@ -7,16 +7,6 @@ source $pythonENV/bin/activate
 
 cities=(
     Warszawa
-    Krakow
-    Wroclaw
-    Gdansk
-    Poznan
-    Lodz
-    Gdynia
-    Lublin
-    Katowice
-    Trojmiasto
-    Gliwice
 )
 categories=(
     devops
@@ -36,5 +26,6 @@ categories=(
 for city in "${cities[@]}"; do
     for category in "${categories[@]}"; do
         $appPATH/nofluff.py --city=$city --category=$category
+        sleep 10
     done
 done
