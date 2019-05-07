@@ -9,7 +9,11 @@ import configparser
 import requests
 from collections import namedtuple
 
-logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
+
+logging.basicConfig(filename='log.txt',
+                    filemode='w',
+                    format='%(asctime)-12s %(levelname)-8s %(message)s',
+                    level=logging.INFO)
 
 
 def parserinfo():
@@ -65,6 +69,7 @@ class scraper_nofluff:
         for category_url in ads.absolute_links:
             if verify_string in category_url:
                 categories.append(category_url)
+        logging.info('Categories for %s --- %s ' % (city, categories))
         return categories
 
 
@@ -219,24 +224,29 @@ class scraper_nofluff:
 
 
     def send_to_API(self, json):
-        config = self.configinfo()
-        logging.info('Sending json to server')
-        login = config.api_login
-        password = config.api_pass
-        url = config.url
-        s = requests.Session()
-        s.auth = (login, password)
-        data = s.post(url, json=json)
-        logging.info('Response: %s, data: %s' % (data.status_code, data.text))
+        try:
+            config = self.configinfo()
+            logging.info('Sending json to server')
+            login = config.api_login
+            password = config.api_pass
+            url = config.url
+            s = requests.Session()
+            s.auth = (login, password)
+            data = s.post(url, json=json)
+            logging.info('Response: %s, data: %s' % (data.status_code, data.text))
+        except Exception as e:
+            print('--------------------- ERROR ---------------------')
+            logging.exception('Error: %s' % e, exc_info=True)
 
 
 def main():
     scraper = scraper_nofluff()
     args = parserinfo()
-    print(args)
+    logging.info('-------------- START SCRIPT for %s, %s --------------' % (args.city, args.category))
     scraper.configinfo()
     offers_list = scraper.url_get_offers(args.city, args.category)
     scraper.parse_noflufjob_offers_list(offers_list, args.city, args.category)
+    logging.info('-------------- END SCRIPT for %s, %s --------------' % (args.city, args.category))
 
 
 
