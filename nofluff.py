@@ -9,7 +9,6 @@ import configparser
 import requests
 from collections import namedtuple
 import logging.config
-import yaml
 
 
 with open('logging.yaml', 'rt') as f:
@@ -94,7 +93,7 @@ class scraper_nofluff:
 
 
     def parse_noflufjob_offers_list(self, offers_list, city, category):
-        logging.info('Parsing offers list from %s in category: %s' % (city, category))
+        logging.info('Parsing %s offers from %s in category: %s' % (len(offers_list), city, category))
         timestamp = self.current_date()
         data = {'timestamp': timestamp, 'city': city, 'category': category, 'offers_count': len(offers_list)}
         for url_offer in offers_list:
