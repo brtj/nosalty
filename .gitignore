@@ -93,4 +93,5 @@ db.sqlite3
 
 config
 
-*log*
+logging.yaml
+*.log

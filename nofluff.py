@@ -8,12 +8,13 @@ import argparse
 import configparser
 import requests
 from collections import namedtuple
+import logging.config
+import yaml
 
 
-logging.basicConfig(filename='log.txt',
-                    filemode='w',
-                    format='%(asctime)-12s %(levelname)-8s %(message)s',
-                    level=logging.INFO)
+with open('logging.yaml', 'rt') as f:
+    config = yaml.safe_load(f.read())
+    logging.config.dictConfig(config)
 
 
 def parserinfo():
