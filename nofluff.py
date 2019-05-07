@@ -8,7 +8,7 @@ import argparse
 import configparser
 import requests
 from collections import namedtuple
-import logging
+import logging.config
 import yaml
 
 
