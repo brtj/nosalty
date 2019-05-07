@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Report</title>
+</head>
+<body>
+<center>
+    Raport dla {{ city }}, kategoria: {{ category }}<br>
+    Ogłoszeń w kategorii {{ category }} : {{ ads_today }}<br>
+    <br>
+    Ogłoszenia z widełkami UoP: {{ ads_today_uop }}<br>
+    min: {{ uop_min.salary_uop_min__min }}<br>
+    max: {{ uop_max.salary_uop_max__max }}<br>
+    average: {{ uop_avg }}<br>
+    median: {{ uop_med }}<br>
+    <br><br>
+
+    Ogłoszenia z widełkami B2B: {{ ads_today_b2b }}<br>
+    min: {{ b2b_min.salary_b2b_min__min }}<br>
+    max: {{ b2b_max.salary_b2b_max__max }}<br>
+    average: {{ b2b_avg }}<br>
+    median: {{ b2b_med }}<br>
+    <br><br>
+    <br>
+</center>
+</body>
+</html>
