@@ -33,9 +33,13 @@ categories=(
     business-intelligence
 )
 
+start_time="$(date -u +%s)"
 for city in "${cities[@]}"; do
     for category in "${categories[@]}"; do
         $appPATH/nofluff.py --city=$city --category=$category
         sleep 1
     done
 done
+end_time="$(date -u +%s)"
+elapsed="$(($end_time-$start_time))"
+echo "Total of $elapsed seconds elapsed for script"
