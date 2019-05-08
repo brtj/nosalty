@@ -14,7 +14,6 @@ def report(request, city, category):
     today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
     ads_today = Nofluff_data.objects.filter(city=city, category=category,
                                             timestamp__range=(today_min, today_max)).order_by('-timestamp')
-    print(ads_today)
     if ads_today:
         ads_today_uop = Nofluff_data.objects.filter(city=city, category=category, timestamp__range=(today_min, today_max)).exclude(salary_uop_min__isnull=True)
         ads_today_b2b = Nofluff_data.objects.filter(city=city, category=category, timestamp__range=(today_min, today_max)).exclude(salary_b2b_min__isnull=True)
@@ -48,7 +47,6 @@ def get_salary_uop_avg(dict):
         for x in dict:
             math = (x.salary_uop_min + x.salary_uop_max) / 2
             avg_list.append(math)
-        print(avg_list)
         return round(mean(avg_list), 2)
 
 
