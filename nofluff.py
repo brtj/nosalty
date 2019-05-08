@@ -90,15 +90,20 @@ class scraper_nofluff:
         for url_offer in offers.absolute_links:
             if verify_string in url_offer:
                 offers_list.append(url_offer)
+        if len(offers_list) == 0:
+            logging.info('Offers list is EMPTY. URL: %s' % url_category)
         return offers_list
 
 
     def parse_noflufjob_offers_list(self, offers_list, city, category):
-        logging.info('Parsing %s offers from %s in category: %s' % (len(offers_list), city, category))
-        timestamp = self.current_date()
-        data = {'timestamp': timestamp, 'city': city, 'category': category, 'offers_count': len(offers_list)}
-        for url_offer in offers_list:
-            self.parse_nofluffjob_offer(url_offer, city, category)
+        try:
+            logging.info('Parsing %s offers from %s in category: %s' % (len(offers_list), city, category))
+            timestamp = self.current_date()
+            data = {'timestamp': timestamp, 'city': city, 'category': category, 'offers_count': len(offers_list)}
+            for url_offer in offers_list:
+                self.parse_nofluffjob_offer(url_offer, city, category)
+        except:
+            logging.warning('No offers to PARSE. Offers list is EMPTY for %s in category %s.' % (city, category))
 
 
     def parse_nofluffjob_offer(self, url, city, category):
