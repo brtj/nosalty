@@ -24,7 +24,7 @@ def report(request, city, category):
         context = {
             'city': city.capitalize(),
             'category': category.capitalize(),
-            'ads_today': ads_today.count(),
+            'ads_today': ads_today,
             'ads_today_uop': ads_today_uop.count(),
             'uop_min': ads_today_uop.aggregate(Min('salary_uop_min')),
             'uop_max': ads_today_uop.aggregate(Max('salary_uop_max')),

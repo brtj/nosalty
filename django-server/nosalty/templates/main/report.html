@@ -1,28 +1,197 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Report</title>
-</head>
-<body>
-<center>
-    Raport dla {{ city }}, kategoria: {{ category }}<br>
-    Ogłoszeń w kategorii {{ category }} : {{ ads_today }}<br>
-    <br>
-    Ogłoszenia z widełkami UoP: {{ ads_today_uop }}<br>
-    min: {{ uop_min.salary_uop_min__min }}<br>
-    max: {{ uop_max.salary_uop_max__max }}<br>
-    average: {{ uop_avg }}<br>
-    median: {{ uop_med }}<br>
-    <br><br>
+{% extends "main/base.html" %}
 
-    Ogłoszenia z widełkami B2B: {{ ads_today_b2b }}<br>
-    min: {{ b2b_min.salary_b2b_min__min }}<br>
-    max: {{ b2b_max.salary_b2b_max__max }}<br>
-    average: {{ b2b_avg }}<br>
-    median: {{ b2b_med }}<br>
-    <br><br>
-    <br>
-</center>
-</body>
-</html>
+{% block title %}Report for {{ category }} in {{ city }}{% endblock %}
+
+{% block content %}
+<br>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="jumbotron">
+                <h2 class="text-center">
+                        Report<br>
+                        {{ category }} in {{ city }}
+                </h2>
+                <p class="text-center">
+                    Ogłoszeń w kategorii: {{ ads_today.count }}<br>
+                    Ogłoszenia z widełkami UoP: {{ ads_today_uop }}<br>
+                    Ogłoszenia z widełkami B2B: {{ ads_today_b2b }}<br>
+                    </p>
+                <div id="card-959696">
+                    <div class="card">
+                        <div class="card-header">
+                             <a class="card-link collapsed" data-toggle="collapse" data-parent="#card-959696" href="#card-element-674447">Show offers</a>
+                        </div>
+                        <div id="card-element-674447" class="collapse">
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                       <th>
+                                           Position
+                                       </th>
+                                        <th>
+                                            Company Name
+                                        </th>
+                                        <th>
+                                            UoP min
+                                        </th>
+                                        <th>
+                                            UoP max
+                                        </th>
+                                        <th>
+                                            B2B min
+                                        </th>
+                                        <th>
+                                            B2B max
+                                        </th>
+                                        <th>
+                                            URL Link
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    {% for add in ads_today %}
+                                        <tr>
+                                            <td>{{ add.vacancy_name }}</td>
+                                            <td>{{ add.company_name }}</td>
+                                            <td>{{ add.salary_uop_min }}</td>
+                                            <td>{{ add.salary_uop_max }}</td>
+                                            <td>{{ add.salary_b2b_min }}</td>
+                                            <td>{{ add.salary_b2b_max }}</td>
+                                            <td><a href="{{ add.url_to_offer }}">GO TO</a></td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="jumbotron">
+                        <h2 class="text-center">
+                            UoP
+                        </h2>
+                        <table class="table table-sm">
+                            <thead>
+                            <tr>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    min:
+                                </td>
+                                <td>
+                                    {{ uop_min.salary_uop_min__min }}
+                                </td>
+                                <td>
+                                    PLN gross
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    max:
+                                </td>
+                                <td>
+                                    {{ uop_max.salary_uop_max__max }}
+                                </td>
+                                <td>
+                                    PLN gross
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    average:
+                                </td>
+                                <td>
+                                    {{ uop_avg }}
+                                </td>
+                                <td>
+                                    PLN gross
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    median:
+                                </td>
+                                <td>
+                                    {{ uop_med }}
+                                </td>
+                                <td>
+                                    PLN gross
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="jumbotron">
+                        <h2 class="text-center">
+                            B2B
+                        </h2>
+                        <table class="table table-sm">
+                            <thead>
+                            <tr>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    min:
+                                </td>
+                                <td>
+                                    {{ b2b_min.salary_b2b_min__min }}
+                                </td>
+                                <td>
+                                    PLN +VAT
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    max:
+                                </td>
+                                <td>
+                                    {{ b2b_max.salary_b2b_max__max }}
+                                </td>
+                                <td>
+                                    PLN +VAT
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    average:
+                                </td>
+                                <td>
+                                    {{ b2b_avg }}
+                                </td>
+                                <td>
+                                    PLN +VAT
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    median:
+                                </td>
+                                <td>
+                                    {{ b2b_med }}
+                                </td>
+                                <td>
+                                    PLN +VAT
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
