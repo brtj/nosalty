@@ -11,6 +11,7 @@ class Nofluff_data(models.Model):
     salary_uop_max = models.IntegerField(null=True)
     salary_b2b_min = models.IntegerField(null=True)
     salary_b2b_max = models.IntegerField(null=True)
+    url_to_offer = models.URLField(max_length=250)
 
     def __str__(self):
         return self.company_name
