@@ -1,5 +1,5 @@
 {% extends "main/base.html" %}
-
+{% load render_table from django_tables2 %}
 {% block title %}Report for {{ category }} in {{ city }}{% endblock %}
 
 {% block content %}
@@ -13,9 +13,9 @@
                         {{ category }} in {{ city }}
                 </h2>
                 <p class="text-center">
-                    Ogłoszeń w kategorii: {{ ads_today.count }}<br>
-                    Ogłoszenia z widełkami UoP: {{ ads_today_uop }}<br>
-                    Ogłoszenia z widełkami B2B: {{ ads_today_b2b }}<br>
+                    Ads in category: {{ ads_today.count }}<br>
+                    Ads with UoP: {{ ads_today_uop }}<br>
+                    Ads with B2B: {{ ads_today_b2b }}<br>
                     </p>
                 <div id="card-959696">
                     <div class="card">
@@ -24,47 +24,7 @@
                         </div>
                         <div id="card-element-674447" class="collapse">
                             <div class="card-body">
-                                <table class="table table-bordered">
-                                    <thead>
-                                    <tr>
-                                       <th>
-                                           Position
-                                       </th>
-                                        <th>
-                                            Company Name
-                                        </th>
-                                        <th>
-                                            UoP min
-                                        </th>
-                                        <th>
-                                            UoP max
-                                        </th>
-                                        <th>
-                                            B2B min
-                                        </th>
-                                        <th>
-                                            B2B max
-                                        </th>
-                                        <th>
-                                            URL Link
-                                        </th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-
-                                    {% for add in ads_today %}
-                                        <tr>
-                                            <td>{{ add.vacancy_name }}</td>
-                                            <td>{{ add.company_name }}</td>
-                                            <td>{{ add.salary_uop_min }}</td>
-                                            <td>{{ add.salary_uop_max }}</td>
-                                            <td>{{ add.salary_b2b_min }}</td>
-                                            <td>{{ add.salary_b2b_max }}</td>
-                                            <td><a href="{{ add.url_to_offer }}">GO TO</a></td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
+                                {% render_table ads_today_table %}
                             </div>
                         </div>
                     </div>
@@ -83,10 +43,10 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td>
+                                <td class="text-right">
                                     min:
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     {{ uop_min.salary_uop_min__min }}
                                 </td>
                                 <td>
@@ -94,10 +54,10 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>
+                                <td class="text-right">
                                     max:
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     {{ uop_max.salary_uop_max__max }}
                                 </td>
                                 <td>
@@ -105,10 +65,10 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>
+                                <td class="text-right">
                                     average:
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     {{ uop_avg }}
                                 </td>
                                 <td>
@@ -116,10 +76,10 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>
+                                <td class="text-right">
                                     median:
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     {{ uop_med }}
                                 </td>
                                 <td>
@@ -142,10 +102,10 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td>
+                                <td class="text-right">
                                     min:
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     {{ b2b_min.salary_b2b_min__min }}
                                 </td>
                                 <td>
@@ -153,10 +113,10 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>
+                                <td class="text-right">
                                     max:
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     {{ b2b_max.salary_b2b_max__max }}
                                 </td>
                                 <td>
@@ -164,10 +124,10 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>
+                                <td class="text-right">
                                     average:
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     {{ b2b_avg }}
                                 </td>
                                 <td>
@@ -175,10 +135,10 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>
+                                <td class="text-right">
                                     median:
                                 </td>
-                                <td>
+                                <td class="text-center">
                                     {{ b2b_med }}
                                 </td>
                                 <td>

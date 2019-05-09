@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_tables2',
     'nofluff',
     'main'
 ]
@@ -130,3 +131,5 @@ STATIC_URL = '/static/'
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES' : ('rest_framework.permissions.IsAuthenticated',)
 }
+
+DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap4.html"
