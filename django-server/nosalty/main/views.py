@@ -25,6 +25,7 @@ def report(request, city, category):
         today_b2b_avg = get_salary_b2b_avg(ads_today_b2b)
         today_b2b_median = get_salary_b2b_median(ads_today_b2b)
         context = {
+            'timestamp': ads_today[0].timestamp,
             'city': city.capitalize(),
             'category': category.capitalize(),
             'ads_today': ads_today,

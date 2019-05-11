@@ -8,6 +8,17 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div class="jumbotron">
+                <div class="page-header">
+                    <div class="pull-left">
+                      <p class="text-right">report generated at {{ timestamp }}</p>
+                    </div>
+
+                </div>
+                <a href="{% url 'main:index' %}">
+                <button type="button" class="btn btn-info">
+                    Back to main page
+                </button>
+                    </a>
                 <h2 class="text-center">
                         Report<br>
                         {{ category }} in {{ city }}
@@ -20,7 +31,7 @@
                 <div id="card-959696">
                     <div class="card">
                         <div class="card-header">
-                             <a class="card-link collapsed" data-toggle="collapse" data-parent="#card-959696" href="#card-element-674447">Show offers</a>
+                             <a class="card-link collapsed" style="margin:auto; text-align:center; display:block;" data-toggle="collapse" data-parent="#card-959696" href="#card-element-674447">Show offers</a>
                         </div>
                         <div id="card-element-674447" class="collapse">
                             <div class="card-body">
