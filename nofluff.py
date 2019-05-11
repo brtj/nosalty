@@ -115,7 +115,7 @@ class scraper_nofluff:
         company_name = self.parse_get_field(offer, '.dl-horizontal', 'dd')
         salary_uop_min, salary_uop_max, salary_b2b_min, salary_b2b_max = self.parse_get_salary(offer)
         data = {'timestamp': timestamp, 'vacancy_name': vacancy_name, 'company_name': company_name,
-                        'city':city.lower(), 'category': category.lower(),
+                        'city':city.capitalize(), 'category': category.capitalize(),
                         'salary_uop_min':salary_uop_min, 'salary_uop_max': salary_uop_max, 'salary_b2b_min': salary_b2b_min,
                         'salary_b2b_max': salary_b2b_max, 'url_to_offer': url}
         json_data = json.dumps(data)
