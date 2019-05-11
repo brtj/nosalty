@@ -1,22 +1,37 @@
 {% extends "main/base.html" %}
+
 {% load render_table from django_tables2 %}
+
+{% load crispy_forms_tags %}
+
 {% block title %}home page{% endblock %}
 
 {% block content %}
+{% include "main/navbar.html" %}
 <br>
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="jumbotron">
-              <h1 class="text-center">check srly</h1>
-                <a href="{% url 'main:report' city='poznan' category='devops' %}">Report for poznan</a>
+                <div class="text-center">
+                    There are <b>{{ ALL_ads_today_count }}</b> ads aggregated.
+                    <br>
+                    There are from cities like:
+                    {% for city in agg_cities %}
+                        <br>{{ city }}
+                    {% endfor %}<br><br>
+                    For following categories:
+                    {% for category in agg_categories %}
+                        <br>{{ category }}
+                    {% endfor %}
+                    <br><br>
+                    Interesting things:<br>
+                    Offer with highest salary is from {COMPANY NAME} for position {POSITION}. They offer {RANGE}. Go to add {URL}
+                    <br><br>
+                </div>
+                <br>
             </div>
         </div>
     </div>
 </div>
 {% endblock %}
-
-TO DO:
-    Rynek w Poznaniu - raport dla Konkrentych MIAST - dropbox i wybór
-    Rynek w Poznaniu i Kategoria jak poniżej
-    Rynek w Polsce - raport

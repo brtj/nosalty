@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'crispy_forms',
     'django_tables2',
     'nofluff',
     'main'
@@ -133,3 +134,7 @@ REST_FRAMEWORK = {
 }
 
 DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap4.html"
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+

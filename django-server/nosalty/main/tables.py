@@ -8,7 +8,7 @@ class AdsDataTable(tables.Table):
     salary_uop_max = tables.Column(verbose_name='UoP max')
     salary_b2b_min = tables.Column(verbose_name='B2B min')
     salary_b2b_max = tables.Column(verbose_name='B2B max')
-    url_to_offer = tables.TemplateColumn('<a href="{{url_to_offer}}">GO TO</a>')
+    url_to_offer = tables.TemplateColumn('<a href="{{record.url_to_offer}}">GO TO</a>')
 
 
     class Meta:

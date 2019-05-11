@@ -1,17 +1,63 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from nofluff.models import Nofluff_data
 from main.tables import AdsDataTable
 from django_tables2 import RequestConfig
 import datetime
 from django.db.models import Avg, Max, Min, Sum
 from statistics import mean, median
+from main.forms import GetReportForm
 
-# Create your views here.
+
 def index(request):
-    return render(request, 'main/index.html')
+    if request.method == 'POST':
+        form = GetReportForm(request.POST)
+        if form.is_valid():
+            city_choice = form.cleaned_data['city_choice'].lower()
+            category_choice = form.cleaned_data['category_choice'].lower()
+            return redirect('main:report', city=city_choice, category=category_choice)
+    else:
+        form = GetReportForm()
+        today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+        today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+        ads_today = Nofluff_data.objects.filter(timestamp__range=(today_min, today_max))
+        agg_cities = ads_today.values_list('city', flat=True).distinct()
+        agg_categories = ads_today.values_list('category', flat=True).distinct()
+    context = {
+        'form': form,
+        'ALL_ads_today_count': ads_today.count(),
+        'agg_cities': agg_cities,
+        'agg_categories': agg_categories
+    }
+    # href="{% url 'main:report' city='poznan' category='devops' %}
+    return render(request, 'main/index.html', context)
+
+
+def category_report(request):
+    if request.method == 'POST':
+        form = GetReportForm(request.POST)
+        if form.is_valid():
+            city_choice = form.cleaned_data['city_choice'].lower()
+            category_choice = form.cleaned_data['category_choice'].lower()
+            return redirect('main:report', city=city_choice, category=category_choice)
+    else:
+        form = GetReportForm()
+        today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+        today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+        ads_today = Nofluff_data.objects.filter(timestamp__range=(today_min, today_max))
+        agg_cities = ads_today.values_list('city', flat=True).distinct()
+        agg_categories = ads_today.values_list('category', flat=True).distinct()
+    context = {
+        'form': form,
+        'ALL_ads_today_count': ads_today.count(),
+        'agg_cities': agg_cities,
+        'agg_categories': agg_categories
+    }
+    return render(request, 'main/category_report.html', context)
 
 
 def report(request, city, category):
+    city = city.capitalize()
+    category = category.capitalize()
     today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
     today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
     ads_today = Nofluff_data.objects.filter(city=city, category=category, timestamp__range=(today_min, today_max))
@@ -43,7 +89,11 @@ def report(request, city, category):
             }
         return render(request, 'main/report.html', context)
     else:
-        return render(request, 'main/error_report.html')
+        context = {
+            'city': city.capitalize(),
+            'category': category.capitalize()
+        }
+        return render(request, 'main/error_report.html', context)
 
 
 def get_salary_uop_avg(dict):

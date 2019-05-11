@@ -3,43 +3,27 @@
 {% block title %}Report for {{ category }} in {{ city }}{% endblock %}
 
 {% block content %}
+
+{% include "main/navbar.html" %}
 <br>
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="jumbotron">
-                <div class="page-header">
-                    <div class="pull-left">
-                      <p class="text-right">report generated at {{ timestamp }}</p>
-                    </div>
-
-                </div>
-                <a href="{% url 'main:index' %}">
-                <button type="button" class="btn btn-info">
-                    Back to main page
-                </button>
-                    </a>
                 <h2 class="text-center">
                         Report<br>
                         {{ category }} in {{ city }}
                 </h2>
+                <div class="page-header">
+                    <div class="pull-left">
+                      <p class="text-right">report generated at {{ timestamp }}</p>
+                    </div>
+                </div>
                 <p class="text-center">
                     Ads in category: {{ ads_today.count }}<br>
                     Ads with UoP: {{ ads_today_uop }}<br>
                     Ads with B2B: {{ ads_today_b2b }}<br>
                     </p>
-                <div id="card-959696">
-                    <div class="card">
-                        <div class="card-header">
-                             <a class="card-link collapsed" style="margin:auto; text-align:center; display:block;" data-toggle="collapse" data-parent="#card-959696" href="#card-element-674447">Show offers</a>
-                        </div>
-                        <div id="card-element-674447" class="collapse">
-                            <div class="card-body">
-                                {% render_table ads_today_table %}
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
@@ -163,6 +147,16 @@
                 </div>
 			</div>
 		</div>
+    <div class="row">
+            <div class="col-md-12">
+                <div class="jumbotron">
+                    <h2 class="text-center">
+                        Offers list
+                    </h2>
+                    {% render_table ads_today_table %}
+                </div>
+            </div>
+    </div>
 	</div>
 </div>
 {% endblock %}
