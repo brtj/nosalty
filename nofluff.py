@@ -255,6 +255,5 @@ def main():
     logging.info('-------------- END SCRIPT for %s, %s --------------' % (args.city, args.category))
 
 
-
 if __name__ == "__main__":
     main()
