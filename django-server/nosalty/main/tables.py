@@ -20,7 +20,6 @@ class AdsDataTable(tables.Table):
             'salary_uop_min',
             'salary_uop_max',
             'salary_b2b_min',
-            'salary_b2b_max',
-            'url_to_offer'
+            'salary_b2b_max'
         ]
         template_name = 'django_tables2/bootstrap4.html'
