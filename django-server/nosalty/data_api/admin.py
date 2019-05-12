@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import Nofluff_data
+from .models import DataAggregator
 
 
-class Nofluff_dataAdmin(admin.ModelAdmin):
+class DataAggregatorAdmin(admin.ModelAdmin):
     list_display = ('id', 'timestamp', 'vacancy_name', 'company_name', 'city', 'category')
     readonly_fields = ('timestamp',)
 
 
-admin.site.register(Nofluff_data, Nofluff_dataAdmin)
+admin.site.register(DataAggregator, DataAggregatorAdmin)

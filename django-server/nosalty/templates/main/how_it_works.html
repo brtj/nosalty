@@ -1,0 +1,28 @@
+{% extends "main/base.html" %}
+
+{% load render_table from django_tables2 %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}home page{% endblock %}
+
+{% block content %}
+{% include "main/navbar.html" %}
+<br>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="jumbotron">
+                <div class="text-center">
+                    <h5 class="text-center">How it works</h5>
+                    <br>
+                    Simple django app. Don't have skills (yet) to do better frontend (will try)<br>
+                    + <br>
+                    Fully automated .py scrapers which send data to server API daily.<br>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

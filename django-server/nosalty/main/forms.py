@@ -1,5 +1,5 @@
 from django import forms
-from nofluff.models import Nofluff_data
+from data_api.models import DataAggregator
 
 
 class GetReportForm(forms.Form):
@@ -8,5 +8,5 @@ class GetReportForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(GetReportForm, self).__init__(*args, **kwargs)
-        self.fields['city_choice'].choices = Nofluff_data.objects.all().values_list('city','city').distinct()
-        self.fields['category_choice'].choices = Nofluff_data.objects.values_list('category', 'category').distinct()
+        self.fields['city_choice'].choices = DataAggregator.objects.all().values_list('city','city').distinct()
+        self.fields['category_choice'].choices = DataAggregator.objects.values_list('category', 'category').distinct()

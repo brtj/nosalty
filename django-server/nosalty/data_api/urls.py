@@ -3,7 +3,7 @@ from . import views
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-router.register('nofluff_data', views.NofluffView)
+router.register('data_api', views.DataAggregatorView)
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from nofluff.models import Nofluff_data
+from data_api.models import DataAggregator
 from main.tables import AdsDataTable
 from django_tables2 import RequestConfig
 import datetime
@@ -19,7 +19,7 @@ def index(request):
         form = GetReportForm()
         today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
         today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
-        ads_today = Nofluff_data.objects.filter(timestamp__range=(today_min, today_max))
+        ads_today = DataAggregator.objects.filter(timestamp__range=(today_min, today_max))
         agg_cities = ads_today.values_list('city', flat=True).distinct()
         agg_categories = ads_today.values_list('category', flat=True).distinct()
     context = {
@@ -28,7 +28,6 @@ def index(request):
         'agg_cities': agg_cities,
         'agg_categories': agg_categories
     }
-    # href="{% url 'main:report' city='poznan' category='devops' %}
     return render(request, 'main/index.html', context)
 
 
@@ -43,7 +42,7 @@ def category_report(request):
         form = GetReportForm()
         today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
         today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
-        ads_today = Nofluff_data.objects.filter(timestamp__range=(today_min, today_max))
+        ads_today = DataAggregator.objects.filter(timestamp__range=(today_min, today_max))
         agg_cities = ads_today.values_list('city', flat=True).distinct()
         agg_categories = ads_today.values_list('category', flat=True).distinct()
     context = {
@@ -60,12 +59,12 @@ def report(request, city, category):
     category = category.capitalize()
     today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
     today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
-    ads_today = Nofluff_data.objects.filter(city=city, category=category, timestamp__range=(today_min, today_max))
+    ads_today = DataAggregator.objects.filter(city=city, category=category, timestamp__range=(today_min, today_max))
     if ads_today:
-        ads_today_table = AdsDataTable(Nofluff_data.objects.filter(city=city, category=category, timestamp__range=(today_min, today_max)))
+        ads_today_table = AdsDataTable(DataAggregator.objects.filter(city=city, category=category, timestamp__range=(today_min, today_max)))
         RequestConfig(request).configure(ads_today_table)
-        ads_today_uop = Nofluff_data.objects.filter(city=city, category=category, timestamp__range=(today_min, today_max)).exclude(salary_uop_min__isnull=True)
-        ads_today_b2b = Nofluff_data.objects.filter(city=city, category=category, timestamp__range=(today_min, today_max)).exclude(salary_b2b_min__isnull=True)
+        ads_today_uop = DataAggregator.objects.filter(city=city, category=category, timestamp__range=(today_min, today_max)).exclude(salary_uop_min__isnull=True)
+        ads_today_b2b = DataAggregator.objects.filter(city=city, category=category, timestamp__range=(today_min, today_max)).exclude(salary_b2b_min__isnull=True)
         today_uop_avg = get_salary_uop_avg(ads_today_uop)
         today_uop_median = get_salary_uop_median(ads_today_uop)
         today_b2b_avg = get_salary_b2b_avg(ads_today_b2b)
@@ -130,3 +129,15 @@ def get_salary_b2b_median(dict):
             med_list.append(x.salary_b2b_min)
             med_list.append(x.salary_b2b_max)
         return median(med_list)
+
+
+def contact(request):
+    return render(request, 'main/contact.html')
+
+
+def change_log(request):
+    return render(request, 'main/change_log.html')
+
+
+def how_it_works(request):
+    return render(request, 'main/how_it_works.html')

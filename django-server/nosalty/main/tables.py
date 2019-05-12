@@ -1,5 +1,5 @@
 import django_tables2 as tables
-from nofluff.models import Nofluff_data
+from data_api.models import DataAggregator
 
 class AdsDataTable(tables.Table):
     vacancy_name = tables.Column(attrs={'td': {'class': 'text-center'}}, verbose_name='Position')
@@ -12,7 +12,7 @@ class AdsDataTable(tables.Table):
 
 
     class Meta:
-        model = Nofluff_data
+        model = DataAggregator
         attrs = {'class': 'table table-bordered'}
         fields = [
             'vacancy_name',

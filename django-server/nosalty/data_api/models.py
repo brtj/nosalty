@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-class Nofluff_data(models.Model):
+class DataAggregator(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     vacancy_name = models.CharField(max_length=250)
     company_name = models.CharField(max_length=250)

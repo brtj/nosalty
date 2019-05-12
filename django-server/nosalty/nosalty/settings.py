@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'crispy_forms',
     'django_tables2',
-    'nofluff',
+    'data_api',
     'main'
 ]
 
