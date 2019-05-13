@@ -14,8 +14,16 @@
 		<div class="col-md-12">
 			<div class="jumbotron">
                 <div class="text-center">
-                    <h5 class="text-center">Change log</h5>
+                    <h5 class="">Change log</h5>
                     <br>
+                    {% for change in changelog %}
+                    <hr>
+                    Title: {{ change.title }} <br>
+                    Version: {{ change.version }}<br>
+                    <br>
+                    Message: {{ change.message }}<br>
+                    <br><br>
+                    {% endfor %}
                 </div>
                 <br>
             </div>

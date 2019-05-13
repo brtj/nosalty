@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_tables2',
     'data_api',
-    'main'
+    'main',
+    'changelog'
 ]
 
 MIDDLEWARE = [

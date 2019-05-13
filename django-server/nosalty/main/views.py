@@ -132,10 +132,6 @@ def contact(request):
     return render(request, 'main/contact.html')
 
 
-def change_log(request):
-    return render(request, 'main/change_log.html')
-
-
 def how_it_works(request):
     return render(request, 'main/how_it_works.html')
 
