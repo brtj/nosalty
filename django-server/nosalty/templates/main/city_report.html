@@ -1,0 +1,33 @@
+{% extends "main/base.html" %}
+
+{% load render_table from django_tables2 %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}home page{% endblock %}
+
+{% block content %}
+{% include "main/navbar.html" %}
+<br>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="jumbotron">
+                <br>
+                <h5 class="text-center">Check salary for specified city</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-6">
+                            {{ form.city_choice|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="text-center">
+                    <button type="submit" class="btn btn-success">Generate report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -14,7 +14,7 @@
 		<div class="col-md-12">
 			<div class="jumbotron">
                 <div class="text-center">
-                    There are <b>{{ ALL_ads_today_count }}</b> ads aggregated.
+                    There are <b>{{ ALL_ads_today_count }}</b> ads aggregated today.
                     <br>
                     There are from cities like:
                     {% for city in agg_cities %}
@@ -25,9 +25,18 @@
                         <br>{{ category }}
                     {% endfor %}
                     <br><br>
-                    Interesting things:<br>
-                    Offer with highest salary is from {COMPANY NAME} for position {POSITION}. They offer {RANGE}. Go to add {URL}
+                    <b>Interesting things:</b><br>
+                    Offer with highest B2B salary is from {{ best_b2b.company_name }} ( {{ best_b2b.city }} )
+                    for position {{ best_b2b.vacancy_name }}.
+                    <br>
+                    They offer {{ best_b2b.salary_b2b_min }} -
+                    {{ best_b2b.salary_b2b_max }} PLN +VAT.
                     <br><br>
+                    Offer with highest UoP salary is from {{ best_uop.company_name }} ( {{ best_uop.city }} )
+                    for position {{ best_uop.vacancy_name }}.
+                    <br>
+                    They offer {{ best_uop.salary_uop_min }} -
+                    {{ best_uop.salary_uop_max }} PLN gross.
                 </div>
                 <br>
             </div>

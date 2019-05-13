@@ -1,0 +1,36 @@
+{% extends "main/base.html" %}
+
+{% load render_table from django_tables2 %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}home page{% endblock %}
+
+{% block content %}
+{% include "main/navbar.html" %}
+<br>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="jumbotron">
+                <br>
+                <h5 class="text-center">Report for {{ city }}</h5>
+                Ads today: {{ ads_today }}
+                <br><br>
+                Ads by category:<br>
+                {% for category in categories_count %}
+                    {{ category.category }} : {{ category.total }}<br>
+                Average salary UoP: {{ category.avg_uop_min }} - {{ category.avg_uop_max }} PLN gross<br>
+                Average salary B2B: {{ category.avg_b2b_min }} - {{ category.avg_b2b_max }} PLN +VAT<br>
+                <br>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+uop_min_avg_count
+uop_max_avg_count
+b2b_min_avg_count
+b2b_max_avg_count
