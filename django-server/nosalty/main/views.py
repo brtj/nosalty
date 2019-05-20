@@ -161,8 +161,9 @@ class Round(Func):
 
 def city_report(request, city):
     city = city.capitalize()
-    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
-    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+    get_last_date = DataAggregator.objects.all().order_by('-timestamp')[0].timestamp
+    today_min = datetime.combine(get_last_date, time.min)
+    today_max = datetime.combine(get_last_date, time.max)
     ads_today = DataAggregator.objects.filter(city=city, timestamp__range=(today_min, today_max))
     categories_count = ads_today.values('category').annotate(total=Count('category'),
                                                              avg_uop_min=Round(Avg('salary_uop_min')),
