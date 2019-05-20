@@ -2,16 +2,22 @@ from django.shortcuts import render, get_object_or_404, redirect
 from data_api.models import DataAggregator
 from main.tables import AdsDataTable
 from django_tables2 import RequestConfig
-import datetime
+from datetime import datetime, time
 from django.db.models import Avg, Max, Min, Sum, Count, Func
 from statistics import mean, median
 from main.forms import GetReportForm, GetCityReportForm
 
 
-def index(request):
-    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
-    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+def ads_generated_today():
+    get_last_date = DataAggregator.objects.all().order_by('-timestamp')[0].timestamp
+    today_min = datetime.combine(get_last_date, time.min)
+    today_max = datetime.combine(get_last_date, time.max)
     ads_today = DataAggregator.objects.filter(timestamp__range=(today_min, today_max))
+    return ads_today
+
+
+def index(request):
+    ads_today = ads_generated_today()
     agg_cities = ads_today.values_list('city', flat=True).distinct()
     agg_categories = ads_today.values_list('category', flat=True).distinct()
     best_b2b = ads_today.order_by('-salary_b2b_max').values('vacancy_name', 'company_name', 'city',
@@ -37,9 +43,7 @@ def category_report_choice(request):
             return redirect('main:category_report', city=city_choice, category=category_choice)
     else:
         form = GetReportForm()
-        today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
-        today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
-        ads_today = DataAggregator.objects.filter(timestamp__range=(today_min, today_max))
+        ads_today = ads_generated_today()
         agg_cities = ads_today.values_list('city', flat=True).distinct()
         agg_categories = ads_today.values_list('category', flat=True).distinct()
     context = {
@@ -54,8 +58,9 @@ def category_report_choice(request):
 def category_report(request, city, category):
     city = city.capitalize()
     category = category.capitalize()
-    today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
-    today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
+    get_last_date = DataAggregator.objects.all().order_by('-timestamp')[0].timestamp
+    today_min = datetime.combine(get_last_date, time.min)
+    today_max = datetime.combine(get_last_date, time.max)
     ads_today = DataAggregator.objects.filter(city=city, category=category, timestamp__range=(today_min, today_max))
     if ads_today:
         ads_today_table = AdsDataTable(DataAggregator.objects.filter(city=city, category=category, timestamp__range=(today_min, today_max)))
