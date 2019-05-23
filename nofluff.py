@@ -34,11 +34,12 @@ class scraper_nofluff:
         config = configparser.ConfigParser()
         config.read('config')
         if 'nofluffscraper' in config:
-            noconf = namedtuple('config', ['retries', 'wait', 'sleep', 'scrolldown', 'timeout', 'url', 'api_login',
+            noconf = namedtuple('config', ['retries', 'wait', 'sleep', 'sleepcategory', 'scrolldown', 'timeout', 'url', 'api_login',
                                            'api_pass'])
             nofluffconf = noconf(config['nofluffscraper']['retries'],
                                  config['nofluffscraper']['wait'],
                                  config['nofluffscraper']['sleep'],
+                                 config['nofluffscraper']['sleepcategory'],
                                  config['nofluffscraper']['scrolldown'],
                                  config['nofluffscraper']['timeout'],
                                  config['django-server']['url'],
@@ -48,32 +49,7 @@ class scraper_nofluff:
         else:
             raise ValueError('No config file created. Should be in script dir. Use config.template')
 
-
-    def url_get_data(self ,url):
-        config = self.configinfo()
-        logging.info('Getting data for url: %s' % url)
-        session = HTMLSession()
-        headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Safari/605.1.15'}
-        r = session.get(url, headers=headers)
-        r.html.render(retries=int(config.retries), wait=int(config.wait), sleep=int(config.sleep),
-                      scrolldown=int(config.scrolldown), timeout=int(config.timeout))
-        return r.html
-
-
-    def url_get_categories_by_city(self, city):
-        url_create = 'https://nofluffjobs.com/jobs/%s?criteria=city=%s' % (city, city)
-        logging.info('Getting categories for city: %s - url: %s' % (city,url_create))
-        data = self.url_get_data(url_create)
-        ads = data.find('#sticky-container', first=True)
-        categories = []
-        verify_string = '/jobs/%s' % city.lower()
-        for category_url in ads.absolute_links:
-            if verify_string in category_url:
-                categories.append(category_url)
-        logging.info('Categories for %s --- %s ' % (city, categories))
-        return categories
-
-
+    # 1st - get categories
     def url_get_offers(self, city, category):
         logging.info('Getting offers list for category %s in city %s.' % (category, city))
         category_list = self.url_get_categories_by_city(city)
@@ -81,9 +57,9 @@ class scraper_nofluff:
             if category.lower() in url:
                 return self.url_get_offers_list(url)
 
-
+    # 2nd - get offers list - all ads for specific category
     def url_get_offers_list(self, url_category):
-        data = self.url_get_data(url_category)
+        data = self.url_get_data_category(url_category)
         offers = data.find('#sticky-container', first=True)
         offers_list = []
         verify_string = '/job/'
@@ -95,6 +71,52 @@ class scraper_nofluff:
         return offers_list
 
 
+    def url_get_data_category(self ,url):
+        config = self.configinfo()
+        logging.info('Getting data for url: %s' % url)
+        session = HTMLSession()
+        headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Safari/605.1.15'}
+        r = session.get(url, headers=headers)
+        r.html.render(retries=int(config.retries), wait=int(config.wait), sleep=int(config.sleepcategory),
+                      scrolldown=int(config.scrolldown), timeout=int(config.timeout))
+        return r.html
+
+
+    def url_get_data_offer(self ,url):
+        config = self.configinfo()
+        logging.info('Getting data for url: %s' % url)
+        session = HTMLSession()
+        headers = {'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1 Safari/605.1.15'}
+        r = session.get(url, headers=headers)
+        r.html.render(retries=int(config.retries), wait=int(config.wait), sleep=int(config.sleep),
+                      scrolldown=int(config.scrolldown), timeout=int(config.timeout))
+        return r.html
+
+
+    def url_get_categories_by_city(self, city):
+        logging.info('Generating categories for city: %s' % city)
+        hardened_categories = ['business-intelligence',
+                               'business-analyst',
+                               'support',
+                               'project-manager',
+                               'hr',
+                               'ux',
+                               'fullstack',
+                               'frontend',
+                               'mobile',
+                               'testing',
+                               'devops',
+                               'backend'
+                               ]
+
+        categories = []
+        for category in hardened_categories:
+            category_url = 'https://nofluffjobs.com/jobs/poznan/%s?criteria=city=%s' % (category, city.lower())
+            categories.append(category_url)
+        logging.info('Categories for %s generated ' % city)
+        return categories
+
+    # 3rd - parse offers_list
     def parse_noflufjob_offers_list(self, offers_list, city, category):
         try:
             logging.info('Parsing %s offers from %s in category: %s' % (len(offers_list), city, category))
@@ -105,10 +127,10 @@ class scraper_nofluff:
         except:
             logging.warning('No offers to PARSE. Offers list is EMPTY for %s in category %s.' % (city, category))
 
-
+    # 4th - parse offer and send to API
     def parse_nofluffjob_offer(self, url, city, category):
         logging.info('Parsing offer - url: %s, city: %s, category: %s' % (url, city, category))
-        data = self.url_get_data(url)
+        data = self.url_get_data_offer(url)
         offer = data.find('#sticky-container', first=True)
         timestamp = self.current_date()
         vacancy_name = self.parse_get_field(offer, '.article-header-container', 'h1')

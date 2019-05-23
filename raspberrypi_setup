@@ -16,3 +16,13 @@ change chromium_downloader.py
 DOWNLOADS_FOLDER = Path(__pyppeteer_home__) / 'chromium-browser' #chromium folder
 
 chromiumExecutable in 'linux' key to DOWNLOADS_FOLDER / 'chromium-browser' #chromium executable
+
+
+--------- best settings for mac ----------
+[nofluffscraper]
+retries = 3
+wait = 0
+sleep = 1
+sleepcategory = 5
+scrolldown = 0
+timeout = 120
