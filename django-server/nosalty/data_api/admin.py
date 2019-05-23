@@ -5,6 +5,7 @@ from .models import DataAggregator
 class DataAggregatorAdmin(admin.ModelAdmin):
     list_display = ('id', 'timestamp', 'vacancy_name', 'company_name', 'city', 'category')
     readonly_fields = ('timestamp',)
+    ordering = ('-timestamp',)
 
 
 admin.site.register(DataAggregator, DataAggregatorAdmin)

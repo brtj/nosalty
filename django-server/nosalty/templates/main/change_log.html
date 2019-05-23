@@ -19,10 +19,12 @@
                     {% for change in changelog %}
                     <hr>
                     Title: {{ change.title }} <br>
-                    Version: {{ change.version }}<br>
+                    Version: {{ change.version }}
                     <br>
-                    Message: {{ change.message }}<br>
-                    <br><br>
+                    {% filter linebreaks %}
+                    Message:<br> {{ change.message }}
+                    {% endfilter %}
+                    <br>
                     {% endfor %}
                 </div>
                 <br>
