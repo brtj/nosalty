@@ -6,17 +6,17 @@ pythonENV="$appPATH/venv/"
 source $pythonENV/bin/activate
 
 cities=(
-     Warszawa
-     Krakow
+     Poznan
      Wroclaw
      Gdansk
-     Poznan
      Lodz
      Gdynia
      Lublin
      Katowice
      Trojmiasto
      Gliwice
+     Krakow
+     Warszawa
 )
 categories=(
     devops

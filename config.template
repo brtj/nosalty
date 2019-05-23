@@ -5,6 +5,6 @@ sleep = 1
 scrolldown = 1
 timeout = 60
 [django-server]
-url = http://localhost
+url = http://localhost:8000/v1/data_api/
 api_login = login
 api_pass = password
