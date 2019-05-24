@@ -92,7 +92,7 @@ class scraper_nofluff:
                       scrolldown=int(config.scrolldown), timeout=int(config.timeout))
         return r.html
 
-
+    #categories are hardened and used in other scrapers. nofluff was first and thats all
     def url_get_categories_by_city(self, city):
         logging.info('Generating categories for city: %s' % city)
         hardened_categories = ['business-intelligence',
@@ -106,7 +106,8 @@ class scraper_nofluff:
                                'mobile',
                                'testing',
                                'devops',
-                               'backend'
+                               'backend',
+                               'other'
                                ]
 
         categories = []

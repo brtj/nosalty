@@ -5,6 +5,13 @@ sleep = 1
 sleepcategory = 5
 scrolldown = 0
 timeout = 60
+[justjoinscraper]
+retries = 3
+wait = 1
+sleep = 1
+sleepcategory = 5
+scrolldown = 0
+timeout = 60
 [django-server]
 url = http://localhost:8000/v1/data_api/
 api_login = login

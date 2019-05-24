@@ -31,6 +31,7 @@ categories=(
     ux
     business-analyst
     business-intelligence
+    other
 )
 
 start_time="$(date -u +%s)"
