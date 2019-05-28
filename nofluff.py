@@ -94,7 +94,6 @@ class scraper_nofluff:
 
     #categories are hardened and used in other scrapers. nofluff was first and thats all
     def url_get_categories_by_city(self, city):
-        logging.info('Generating categories for city: %s' % city)
         hardened_categories = ['business-intelligence',
                                'business-analyst',
                                'support',
@@ -112,9 +111,8 @@ class scraper_nofluff:
 
         categories = []
         for category in hardened_categories:
-            category_url = 'https://nofluffjobs.com/jobs/poznan/%s?criteria=city=%s' % (category, city.lower())
+            category_url = 'https://nofluffjobs.com/jobs/%s/%s?criteria=city=%s' % (city.lower(), category, city.lower())
             categories.append(category_url)
-        logging.info('Categories for %s generated ' % city)
         return categories
 
     # 3rd - parse offers_list
@@ -255,7 +253,11 @@ class scraper_nofluff:
     def send_to_API(self, json):
         try:
             config = self.configinfo()
-            logging.info('Sending json to server')
+            logging.info('Sending JSON to API, city: %s, company: %s, vacancy: %s' % (
+                json['city'],
+                json['company_name'],
+                json['vacancy_name'])
+            )
             login = config.api_login
             password = config.api_pass
             url = config.url

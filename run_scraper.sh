@@ -6,32 +6,32 @@ pythonENV="$appPATH/venv/"
 source $pythonENV/bin/activate
 
 cities=(
-     Poznan
-     Wroclaw
-     Gdansk
-     Lodz
-     Gdynia
-     Lublin
-     Katowice
-     Trojmiasto
-     Gliwice
-     Krakow
-     Warszawa
+    Gdansk
+    Gdynia
+    Gliwice
+    Katowice
+    Krakow
+    Lodz
+    Lublin
+    Poznan
+    Trojmiasto
+    Warszawa
+    Wroclaw
 )
 categories=(
-    devops
     backend
-    fullstack
-    frontend
-    mobile
-    testing
-    support
-    project-manager
-    hr
-    ux
     business-analyst
     business-intelligence
+    devops
+    frontend
+    fullstack
+    hr
+    mobile
     other
+    project-manager
+    support
+    testing
+    ux
 )
 
 start_time="$(date -u +%s)"
