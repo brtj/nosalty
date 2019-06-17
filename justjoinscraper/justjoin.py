@@ -33,7 +33,7 @@ class scraper_justjoin:
     def configinfo(self):
         config = configparser.ConfigParser()
         config.read('config')
-        if 'nofluffscraper' in config:
+        if 'justjoinscraper' in config:
             noconf = namedtuple('config', ['retries', 'wait', 'sleep', 'sleepcategory', 'scrolldown', 'timeout', 'url', 'api_login',
                                            'api_pass'])
             nofluffconf = noconf(config['justjoinscraper']['retries'],
@@ -54,10 +54,12 @@ class scraper_justjoin:
         # scrap offers for category e.g.
         # https://justjoin.it/poznan/devops
         # return proper offers_list
+        print('get offers')
 
 
     def parse_justjoin_offers_list(self, offers_list, city, category):
         # parse offers list and send it to server
+        print('parse offers')
 
 
 def main():
@@ -66,23 +68,23 @@ def main():
     logging.info('-------------- START SCRIPT for %s, %s --------------' % (args.city, args.category))
     scraper.configinfo()
     offers_list = scraper.url_get_offers(args.city, args.category)
-    scraper.parse_noflufjob_offers_list(offers_list, args.city, args.category)
+    scraper.parse_justjoin_offers_list(offers_list, args.city, args.category)
     logging.info('-------------- END SCRIPT for %s, %s --------------' % (args.city, args.category))
 
 
 if __name__ == "__main__":
     main()
 
-    # hardened_categories = ['business-intelligence', https://justjoin.it/poznan/devops
-    #                        'business-analyst', https://justjoin.it/poznan/devops
-    #                        'support', https://justjoin.it/poznan/devops
-    #                        'project-manager', https://justjoin.it/poznan/devops
-    #                        'hr', https://justjoin.it/poznan/devops
-    #                        'ux', https://justjoin.it/poznan/devops
-    #                        'fullstack', https://justjoin.it/poznan/devops
-    #                        'frontend', https://justjoin.it/poznan/devops
-    #                        'mobile', https://justjoin.it/poznan/devops
-    #                        'testing', https://justjoin.it/poznan/devops
-    #                        'devops', https://justjoin.it/poznan/devops
-    #                        'backend', https://justjoin.it/poznan/devops
-    #                        ]
+    hardened_categories = ['business-intelligence', https://justjoin.it/poznan/devops
+                           'business-analyst', https://justjoin.it/poznan/devops
+                           'support', https://justjoin.it/poznan/devops
+                           'project-manager', https://justjoin.it/poznan/devops
+                           'hr', https://justjoin.it/poznan/devops
+                           'ux', https://justjoin.it/poznan/devops
+                           'fullstack', https://justjoin.it/poznan/devops
+                           'frontend', https://justjoin.it/poznan/devops
+                           'mobile', https://justjoin.it/poznan/devops
+                           'testing', https://justjoin.it/poznan/devops
+                           'devops', https://justjoin.it/poznan/devops
+                           'backend', https://justjoin.it/poznan/devops
+                           ]
