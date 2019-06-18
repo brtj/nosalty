@@ -60,15 +60,22 @@ class scraper_nofluff:
     # 2nd - get offers list - all ads for specific category
     def url_get_offers_list(self, url_category):
         data = self.url_get_data_category(url_category)
-        offers = data.links
+        field_name = data.find('.postings-paginator', first=True)
+        field_find = field_name.find('button')
         offers_list = []
-        verify_string = '/job/'
-        for url_offer in offers:
-            if verify_string in url_offer:
-                abs_link = 'https://nofluffjobs.com'+url_offer
-                offers_list.append(abs_link)
-        if len(offers_list) == 0:
-            logging.info('Offers list is EMPTY. URL: %s' % url_category)
+        logging.info('Pages: %s, for %s' % (len(field_find), url_category))
+        for page in range(len(field_find)):
+            page = page + 1
+            url_category_pag = url_category + '&page=' + str(page)
+            data = self.url_get_data_category(url_category_pag)
+            offers = data.links
+            verify_string = '/job/'
+            for url_offer in offers:
+                if verify_string in url_offer:
+                    abs_link = 'https://nofluffjobs.com'+url_offer
+                    offers_list.append(abs_link)
+            if len(offers_list) == 0:
+                logging.info('Offers list is EMPTY. URL: %s' % url_category)
         logging.info('-------------- OFFERS GATHERED --------------')
         logging.info(offers_list)
         logging.info('---------------------------------------------')
