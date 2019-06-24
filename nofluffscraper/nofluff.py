@@ -34,14 +34,15 @@ class scraper_nofluff:
         config = configparser.ConfigParser()
         config.read('config.ini')
         if 'nofluffscraper' in config:
-            noconf = namedtuple('config', ['retries', 'wait', 'sleep', 'sleepcategory', 'scrolldown', 'timeout', 'url', 'api_login',
-                                           'api_pass'])
+            noconf = namedtuple('config', ['retries', 'wait', 'sleep', 'sleepcategory', 'scrolldown', 'timeout',
+                                           'url_auth', 'url', 'api_login', 'api_pass'])
             nofluffconf = noconf(config['nofluffscraper']['retries'],
                                  config['nofluffscraper']['wait'],
                                  config['nofluffscraper']['sleep'],
                                  config['nofluffscraper']['sleepcategory'],
                                  config['nofluffscraper']['scrolldown'],
                                  config['nofluffscraper']['timeout'],
+                                 config['django-server']['url_auth'],
                                  config['django-server']['url'],
                                  config['django-server']['api_login'],
                                  config['django-server']['api_pass'])
@@ -281,9 +282,23 @@ class scraper_nofluff:
             logging.exception('Error: %s' % e, exc_info=True)
 
 
+    def auth_to_API(self):
+        config = self.configinfo()
+        login = config.api_login
+        password = config.api_pass
+        url = config.url_auth
+        s = requests.Session()
+        s.auth = (login, password)
+        data = s.get(url)
+        if data.status_code != 200:
+            logging.exception('Error: %s' % data.status_code)
+            exit(1)
+
+
 def main():
     scraper = scraper_nofluff()
     args = parserinfo()
+    scraper.auth_to_API()
     logging.info('-------------- START SCRIPT for %s, %s --------------' % (args.city, args.category))
     scraper.configinfo()
     offers_list = scraper.url_get_offers(args.city, args.category)
