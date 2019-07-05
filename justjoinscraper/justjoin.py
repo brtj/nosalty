@@ -87,7 +87,6 @@ class scraper_justjoin:
 
     # 2nd - get offers list - all ads for specific category
     def url_get_offers_list(self, url_category):
-        url_category = 'https://justjoin.it/all/devops'
         data = self.url_get_data_category(url_category)
         field_name = data.find('.offers-list', first=True)
         offers = field_name.links
@@ -104,8 +103,7 @@ class scraper_justjoin:
         logging.info(offers_list)
         logging.info('---------------------------------------------')
         return offers_list
-        # offers_lista = ['https://justjoin.it/offers/egnyte-poland-network-engineer']
-        # return offers_lista
+    
 
     def url_get_data_category(self ,url):
         config = self.configinfo()
