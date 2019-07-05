@@ -97,3 +97,6 @@ logging.yaml
 *.log
 run_scraper_*
 nohup.out
+errors.log
+info.log
+config.ini

@@ -1,4 +1,4 @@
-[nofluffscraper]
+[justjoinscraper]
 retries = 3
 wait = 1
 sleep = 1
@@ -14,5 +14,5 @@ scrolldown = 0
 timeout = 60
 [django-server]
 url = http://localhost:8000/v1/data_api/
-api_login = login
-api_pass = password
+api_login = bjarocki
+api_pass = test1234
